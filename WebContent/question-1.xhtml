@@ -16,22 +16,30 @@
 <h:body>
 
 <div id="form">
- <h:form id="form-input">
- 	<p id="errorMessage"></p>
- 	<div class="field">
- 	<h:outputLabel>Add new to array number</h:outputLabel>
- 	<h:inputText id="newNumber" value="#{newNumber.inputNumber}"/>
- 	</div>
+ <h:form id="form-input" onsubmit="return false;">
  	
  	<div class="field">
- 	<h:button type="button" onclick="addNumber();" value="Add number"  />
+ 	<h:outputLabel>Add new number to array</h:outputLabel>
+ 	<h:inputText id="newNumber" class="input-field" value="#{newNumber.inputNumber}"/>
+ 	</div>
+ 	<div class="field">
+ 	<p id="errorMessage"></p>
+ 	</div>
+ 	<div class="field">
+	<span onclick="addNumber();" class="submit">Add Number</span>
  	</div>
  </h:form>
  
- <div id="allNumbers">
+ <h3 id="heading">Array of integers <span id="action-message">Click on item to remove</span></h3>
+ <div id="all-numbers">
+ 
+ </div>
+ <div>
+ 	<span onclick="getCommonFactor();" class="submit">Display Factors</span>
+ 	<div id="render-fators"></div>
+ 	<div id="Highest-fator"></div>
  </div>
 </div>
-
 	<h:outputScript library="common" name="js/function.js" />
 </h:body>
 

@@ -18,7 +18,39 @@
 	 padding:15px;
 }
 
-.display {
-	
+.submit {
+	border: solid 1px black;
+    padding: 1%;
+    display: inline-block;
+    width: initial;
+    cursor: pointer;
 }
+.field{
+	margin:1% 0 1%;
+}
+#errorMessage{
+	color:red;
+}
+.input-field{
+	margin-left: 1%;
+	    padding: 1%;
+}
+#heading{text-align:center;}
 
+#all-numbers ul{
+	background: white;
+    width: 300px;
+    margin: auto;
+    padding-left: 11px;
+    
+}
+#all-numbers ul>li{
+	    margin: 10px;
+    	border-bottom: solid 1px black;
+    	padding: 10px;
+    	cursor: pointer;
+}
+#action-message{
+	font-size: 10px;
+    display: block;
+}
