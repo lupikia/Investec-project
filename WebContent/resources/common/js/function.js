@@ -143,6 +143,7 @@ function renderResults(){
 
 function getCommonFactor(){
 	
+	if(numbers.length >0){
 	commonfactors={};
 	 for(var z= 0; z<numbers.length;z++){
 		
@@ -157,4 +158,8 @@ function getCommonFactor(){
 		 }
 	 }
 	 renderResults();
+	}else{
+		 errorMessage("Enter your first number");
+
+	}
 }

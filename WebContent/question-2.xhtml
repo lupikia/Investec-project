@@ -14,7 +14,6 @@
 	
 <title>Question 2</title>
 </h:head>
-#{jsonupload.name}
 <h:body>
 <div class="container">
 	<div id="form">
@@ -45,7 +44,22 @@
 		      <h:commandButton value="Display All address" type="submit" action="#{jsonupload.getAddress}" class="btn btn-primary" ></h:commandButton>
 			</h:form>
 	
-		
+		<h:dataTable var="myList" value="#{jsonupload.addressInformatoin}" border="1" class="table-data">
+            	<h:column>
+                <f:facet name="header">City name</f:facet>
+                    #{myList.cityOrTown}
+                </h:column>
+                <h:column>
+                <f:facet name="header">Postal Code</f:facet>
+                    #{myList.typeCode}
+                </h:column>
+                <h:column>
+                <f:facet name="header">Country</f:facet>
+                    #{myList.countryName}
+              	</h:column>
+        </h:dataTable>
+			</div>
+			<div>
 			</div>
 		</div>
 		<div class="col-md-6">
@@ -54,7 +68,20 @@
 			
 		      <h:commandButton value="Display all Valid address" type="submit" action="#{jsonupload.validateAddress}" class="btn btn-warning" ></h:commandButton>
 			</h:form>
-		
+				<h:dataTable var="myList" value="#{jsonupload.validAddressInformatoin}" border="1" class="table-data">
+		            <h:column>
+		                <f:facet name="header">Postal Code</f:facet>
+		                    #{myList.postalCodeData}
+		                </h:column>
+		                <h:column>
+		                <f:facet name="header">Country</f:facet>
+		                    #{myList.countryName}
+		              	</h:column>
+		              	<h:column>
+		                <f:facet name="header">Province And Address</f:facet>
+		                    #{myList.provinceName} ,#{myList.addressLine1} #{myList.addressLine2} 
+		              	</h:column>
+		        </h:dataTable>
 		
 			</div>
 		</div>

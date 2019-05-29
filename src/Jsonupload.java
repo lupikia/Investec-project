@@ -4,18 +4,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
 import javax.servlet.http.Part;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+
 @ManagedBean
 @ViewScoped
 public class Jsonupload {
@@ -25,8 +26,11 @@ public class Jsonupload {
 	private InputStream inputStream;
 	private OutputStream outputStream;
 	private Boolean replaceFile;
-	private List<Address> addressInformatoin;
-	
+	private ArrayList<Address> addressInformatoin =new ArrayList<Address>() ;
+	private ArrayList<Address> validAddressInformatoin =new ArrayList<Address>() ;
+
+	private  JSONArray arrayinfo;
+
 	public Boolean getReplaceFile() {
 		return replaceFile;
 	}
@@ -52,25 +56,138 @@ public class Jsonupload {
 	}
 
 	
+	public ArrayList<Address> getAddressInformatoin() {
+		return addressInformatoin;
+	}
+
 	public void getAddress() {
 		
+		if(readFile()) 
+		{
+			addressInformatoin.clear();
+
+			arrayinfo.forEach(infoData->prepList((JSONObject ) infoData));
+		}
+	}
+	
+	public void getValidAddress() {
+		
+		if(readFile()) 
+		{
+			arrayinfo.forEach(infoData->prepList((JSONObject ) infoData));
+			validateAddress();
+		}
+	}
+	public InputStream getInputStream() {
+		return inputStream;
+	}
+
+	public OutputStream getOutputStream() {
+		return outputStream;
+	}
+
+	public ArrayList<Address> getValidAddressInformatoin() {
+		return validAddressInformatoin;
+	}
+
+	public JSONArray getArrayinfo() {
+		return arrayinfo;
+	}
+
+	private Boolean readFile() {
+		
 		 JSONParser parseData = new JSONParser();
+
 		try (FileReader reader = new FileReader("c:\\addresses.json"))
         {
-            
- 
+			Object objData = parseData.parse(reader);
+			
+			arrayinfo = (JSONArray)objData;
+			return true;
+			
         } catch (Exception e) {
-       
         	
+            return false;
         } 
+	}
+	
+	public void prepList(JSONObject  info) {
+		
+		JSONObject countryObject = (JSONObject) info.get("country");		
+		JSONObject typeObject = (JSONObject) info.get("type");		
+		JSONObject provinceOrStateObject;
+		JSONObject addressLineDetailObject;
+
+		Address addresInfo = new Address( countryObject.get("code").toString(),countryObject.get("name").toString(),
+				typeObject.get("code").toString(),typeObject.get("name").toString(),
+				info.get("postalCode").toString(), 
+				info.get("lastUpdated").toString(), 
+				info.get("id").toString(), 
+				info.get("cityOrTown").toString());
+		
+		//-->setting other data
+		if(info.containsKey("provinceOrState")) {
+			 provinceOrStateObject = (JSONObject) info.get("provinceOrState");
+			 addresInfo.setProvinceName(provinceOrStateObject.get("code").toString());
+			 addresInfo.setProvinceCode(provinceOrStateObject.get("name").toString());
+		}
+		
+		if(info.containsKey("addressLineDetail")) {
+			addressLineDetailObject = (JSONObject) info.get("addressLineDetail");
+			 addresInfo.setAddressLine1(addressLineDetailObject.get("line1").toString());
+			 addresInfo.setAddressLine2(addressLineDetailObject.get("line2").toString());
+		}
+
+		
+		addressInformatoin.add(addresInfo);
+		
 		
 	}
 	public void validateAddress() {
 		
+		for(int t=0;t<addressInformatoin.size();t++) {
+			
+			//-->check if address validation is valid with one
+			
+			if(addressInformatoin.get(t).addressLine1 !="" || addressInformatoin.get(t).addressLine2 !=""  ) 
+			{
+				 
+				//-->Check for valid postal code
+				Pattern regPostal = Pattern.compile("^[0-9]*$");
+			      
+			    Matcher checkPostal = regPostal.matcher(addressInformatoin.get(t).postalCodeData);
+			      
+				if(checkPostal.find()) {
+					
+					//-->check for a country
+					if(!addressInformatoin.get(t).countryName.isEmpty()) {
+						
+						
+						//-->check for ZA code
+						if(addressInformatoin.get(t).countryCode.toLowerCase()=="za") {
+							
+							//-->check if province is available
+							if(!addressInformatoin.get(t).provinceName.isEmpty()) {
+								
+								addValidAddress(addressInformatoin.get(t));
+							}
+						}else {
+							
+								addValidAddress(addressInformatoin.get(t));
+						}
+					}
+				}
+			}
+		}
 		
 		
 	}
 
+	public void addValidAddress(Address data) {
+		
+		validAddressInformatoin.add(data) ;
+
+	}
 	
 	public void uploading() {
 	
